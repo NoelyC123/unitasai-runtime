@@ -54,7 +54,11 @@ Nothing in this repository may be modified without a **Canon version bump** (v0.
 **Status:** ACTIVE  
 **Purpose:** Execution, experimentation, tooling, UI, CLI, integrations
 
-The Canon is vendored into this repository as **read-only input** under: `vendor/unitasai-canon-v0.1/`
+The Canon is vendored into this repository as **read-only input** under:
+
+```
+vendor/unitasai-canon-v0.1/
+```
 
 This repo is safe for:
 - ChatGPT analysis
@@ -178,33 +182,7 @@ They are explicit design deferrals.
 
 ---
 
-## 8. Known Governance Hazard — Authority Collapse via Evaluation Deference (Accepted Risk)
-
-Canon v0.1 explicitly acknowledges a known governance hazard:
-
-Evaluative components (including belief evaluation engines and invariant checks), while formally non-authoritative and non-autonomous, may over time become **de facto authoritative** through controller deference patterns.
-
-This failure mode:
-- Is sociotechnical rather than purely technical
-- Can occur while all Canon v0.1 invariants remain formally satisfied
-- Is audit-visible but not audit-preventable
-- Is reinforced rather than eliminated by determinism and consistency
-- Is not mechanically preventable under Canon v0.1 constraints
-
-Canon v0.1 does **not** claim to prevent this failure mode.
-
-The existence of controller mediation, deterministic evaluation, or complete audit logging must not be interpreted as a guarantee against authority collapse.
-
-This risk is:
-- Explicitly acknowledged
-- Explicitly bounded
-- Explicitly accepted under Canon v0.1
-
-Mitigation, prevention, or structural countermeasures — if ever pursued — require a future Canon revision (v0.2+) or higher-order governance layers and are intentionally out of scope for Phase 21B and Canon v0.1.
-
----
-
-## 9. Audit Guidance for Reviewers (Human or AI)
+## 8. Audit Guidance for Reviewers (Human or AI)
 
 When reviewing this system, reviewers are encouraged to:
 
@@ -221,7 +199,7 @@ Reviewers must **not**:
 
 ---
 
-## 10. Questions This System Is Meant to Support
+## 9. Questions This System Is Meant to Support
 
 UnitasAI is designed to help answer questions like:
 
@@ -233,7 +211,7 @@ UnitasAI is designed to help answer questions like:
 
 ---
 
-## 11. Final Note
+## 10. Final Note
 
 This project is intentionally conservative, explicit, and slow.
 
@@ -246,3 +224,4 @@ Speed, intelligence amplification, and autonomy are **secondary** to:
 ---
 
 **End of AI Audit Pack — Canon v0.1**
+

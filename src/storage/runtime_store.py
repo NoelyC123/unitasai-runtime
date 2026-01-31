@@ -9,6 +9,7 @@ No inference.
 import json
 import time
 import hashlib
+from typing import Any, Dict
 
 
 class RuntimeStore:
@@ -39,17 +40,11 @@ class RuntimeStore:
     # Belief storage
     # ─────────────────────────────────────────────
 
-    def store_belief(self, case_id: str, belief: dict):
-        """
-        Append a single belief artifact.
-        """
+    def store_belief(self, case_id: str, belief: Dict[str, Any]):
         self.ensure_case(case_id)
         self._cases[case_id]["beliefs"].append(belief)
 
     def store_beliefs(self, case_id: str, beliefs: list):
-        """
-        Append multiple belief artifacts.
-        """
         self.ensure_case(case_id)
         self._cases[case_id]["beliefs"].extend(beliefs)
 
@@ -69,24 +64,36 @@ class RuntimeStore:
     # Evaluations (Phase 21B)
     # ─────────────────────────────────────────────
 
-    def store_evaluation(self, case_id: str, evaluation):
+    def store_evaluation(self, case_id: str, evaluation: Any):
         """
         Append-only evaluation artifact.
+
+        Accepts either:
+        - dict (preferred, canonical)
+        - object with __dict__ (legacy-compatible)
+
+        Stores dict representation only.
         """
         self.ensure_case(case_id)
-        self._cases[case_id]["evaluations"].append(evaluation)
+
+        if isinstance(evaluation, dict):
+            payload = evaluation
+        else:
+            payload = dict(evaluation.__dict__)
+
+        self._cases[case_id]["evaluations"].append(payload)
 
         self.log(
             case_id,
-            "EVALUATION",
-            evaluation.__dict__,
+            action="EVALUATION",
+            payload=payload,
         )
 
     # ─────────────────────────────────────────────
-    # Audit log
+    # Audit log (append-only)
     # ─────────────────────────────────────────────
 
-    def log(self, case_id: str, action: str, payload: dict):
+    def log(self, case_id: str, action: str, payload: Dict[str, Any]):
         self.ensure_case(case_id)
 
         entry = {
@@ -103,3 +110,24 @@ class RuntimeStore:
             entry["prev_hash"] = audit[-1]["hash"]
 
         audit.append(entry)
+
+    # ─────────────────────────────────────────────
+    # Read-only observatory access (RADO)
+    # ─────────────────────────────────────────────
+
+    def list_audit_events(self, case_id: str):
+        """
+        Read-only access to audit events.
+
+        This method:
+        - Returns existing audit records only
+        - Performs no mutation
+        - Emits no audit events
+        - Does not influence controller behaviour
+        - Exists solely for post-hoc observatory analysis
+        """
+        case = self._cases.get(case_id)
+        if not case:
+            return []
+
+        return list(case.get("audit", []))
