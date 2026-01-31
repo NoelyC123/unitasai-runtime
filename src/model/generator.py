@@ -1,22 +1,46 @@
 """
-Generator Interface
+Hypothesis Generator (Runtime)
 
-This module wraps the LLM.
-It generates hypotheses ONLY.
-It has zero epistemic authority.
+This component:
+- generates candidate hypotheses only
+- has NO epistemic authority
+- does NOT decide truth
+- does NOT evaluate invariants
+- does NOT mutate state
+
+All authority remains with the RuntimeController.
 """
 
-from typing import List
 
-
-def generate_hypotheses(prompt: str) -> List[str]:
+class HypothesisGenerator:
     """
-    Return a list of neutral, conditional hypotheses.
+    Non-authoritative hypothesis generator.
 
-    This is a stub.
-    LLM wiring happens later.
+    In production this may wrap:
+    - an LLM
+    - a rules engine
+    - a retrieval system
+
+    For now, it is deterministic and simple.
     """
-    return [
-        f"It is possible that {prompt}",
-        f"One explanation could be that {prompt}",
-    ]
+
+    def generate(self, raw_query: str) -> list[str]:
+        """
+        Generate candidate hypotheses.
+
+        This method MUST:
+        - return multiple possibilities when possible
+        - avoid authoritative language
+        - avoid resolution
+        """
+
+        raw_query = raw_query.strip()
+
+        if not raw_query:
+            return []
+
+        # Demo-only deterministic output
+        return [
+            f"It is possible that {raw_query}",
+            f"One explanation could be that {raw_query}",
+        ]

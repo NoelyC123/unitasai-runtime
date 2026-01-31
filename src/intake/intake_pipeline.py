@@ -1,54 +1,64 @@
 """
-Phase 23 — Epistemic Intake Pipeline
+Phase 23 — Canon Intake Pipeline
 
-This module is responsible for:
-- Accepting raw user input
-- Invoking the generator
-- Emitting candidate belief objects
-- Recording audit events
-
-It MUST NOT:
-- Evaluate beliefs
-- Assign confidence
-- Enforce invariants
-- Resolve tensions
-- Mutate existing beliefs
+This pipeline:
+- accepts raw user input
+- delegates hypothesis generation
+- creates belief *candidates* only
+- performs NO evaluation
+- performs NO mutation outside storage
 """
 
-from typing import List, Dict, Any
-from src.model.generator import generate_hypotheses
-from src.storage.runtime_store import RuntimeStore
-from src.controller.runtime_controller import RuntimeController
+from typing import List, Dict
+import time
 
 
-def intake_query(
+def run_intake(
+    *,
     case_id: str,
     raw_query: str,
-    store: RuntimeStore,
-    controller: RuntimeController,
-) -> List[Dict[str, Any]]:
+    generator,
+    controller,
+    store,
+) -> List[Dict]:
     """
-    Intake a raw query and return candidate belief objects.
+    Execute intake for a single query.
 
-    All authority remains with the controller.
+    Parameters are keyword-only to prevent accidental misuse.
     """
 
-    controller.authorise_intake(case_id, raw_query)
+    # ─────────────────────────────────────────────
+    # Controller authorisation (Phase 1–3)
+    # ─────────────────────────────────────────────
 
-    hypotheses = generate_hypotheses(raw_query)
+    if not controller.authorise_intake(case_id, raw_query):
+        raise RuntimeError("Intake not authorised by controller")
 
-    beliefs = []
-    for h in hypotheses:
+    # ─────────────────────────────────────────────
+    # Hypothesis generation (NON-AUTHORITATIVE)
+    # ─────────────────────────────────────────────
+
+    texts = generator.generate(raw_query)
+
+    beliefs: List[Dict] = []
+
+    for text in texts:
         belief = {
             "id": controller.new_belief_id(),
-            "text": h,
-            "status": "candidate",
+            "case_id": case_id,
+            "text": text,
             "scope": "assertive",
             "origin": "generator",
+            "timestamp": time.time(),
         }
         beliefs.append(belief)
 
-    store.record_candidates(case_id, beliefs)
+    # ─────────────────────────────────────────────
+    # Storage (append-only)
+    # ─────────────────────────────────────────────
+
+    store.store_beliefs(case_id, beliefs)
+
     controller.audit_intake(case_id, raw_query, beliefs)
 
     return beliefs
