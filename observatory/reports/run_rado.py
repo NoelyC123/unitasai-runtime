@@ -2,13 +2,6 @@
 RADO — Runtime Authority Drift Observatory (Report Runner)
 
 Read-only, post-hoc observatory over RuntimeStore audit events.
-
-Rules:
-- NO mutation
-- NO control
-- NO evaluation
-- NO audit emission
-- Descriptive metrics only (non-normative)
 """
 
 from __future__ import annotations
@@ -23,55 +16,39 @@ from observatory.presentation.temporal_windows_text import (
 
 
 def run_rado(*, store, case_id: str) -> None:
-    """
-    Execute RADO over a LIVE RuntimeStore instance (injected).
-
-    Important:
-    - store is injected by the runtime entrypoint (e.g., run.py)
-    - RADO never constructs a store
-    - RADO never writes to the store
-    """
-
     events = store.list_audit_events(case_id)
-
     obs = AuthorityDriftObservatory(events)
 
     print("\n=== RADO REPORT ===")
-    print(f"Case ID: {case_id}")
-    print("-------------------\n")
+    print(f"Case ID: {case_id}\n")
 
     print("Audit Summary:")
-    summary = obs.audit_summary()
-    for k, v in summary.items():
+    for k, v in obs.audit_summary().items():
         print(f"  {k}: {v}")
 
     print("\nAuthority Drift Signals:")
-    drift = obs.authority_drift_signals()
-    for k, v in drift.items():
+    for k, v in obs.authority_drift_signals().items():
         print(f"  {k}: {v}")
-
-    # ─────────────────────────────────────────────
-    # Phase 21B++c — Temporal Authority Drift Windows
-    # Phase 21B++d — Presentation & Summarisation
-    # ─────────────────────────────────────────────
 
     temporal = obs.temporal_authority_drift_windows()
 
-    formatted = join_blocks(
-        format_temporal_summary(temporal),
-        format_drift_episodes(temporal),
-        format_window_table(temporal),
+    print("\nTemporal Authority Drift:")
+    print(
+        join_blocks(
+            format_temporal_summary(temporal),
+            format_drift_episodes(temporal),
+            format_window_table(temporal),
+        )
     )
 
-    print("\nTemporal Authority Drift (Summary):")
-    print(formatted)
+    corr = obs.cross_signal_temporal_correlation()
+
+    print("\nCross-Signal Temporal Correlation:")
+    print(f"  Zero-lag r: {corr['zero_lag']['pearson_r']}")
+    if corr["best_abs"]:
+        b = corr["best_abs"]
+        print(f"  Best |r|: {b['pearson_r']} at lag {b['lag']} ({b['paired_points']} points)")
+    else:
+        print("  Best |r|: insufficient data")
 
     print("\nRADO completed (descriptive only).\n")
-
-
-if __name__ == "__main__":
-    print(
-        "\nRADO runner is designed to be called with an injected live store.\n"
-        "Run it from the runtime entrypoint (run.py), not as a standalone script.\n"
-        "Example: python3 run.py\n"
-    )
