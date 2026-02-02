@@ -44,15 +44,20 @@ def run_rado(*, store, case_id: str) -> None:
     corr = obs.cross_signal_temporal_correlation()
     print("\nCross-Signal Temporal Correlation:")
     print(f"  Zero-lag r: {corr['zero_lag']['pearson_r']}")
-    if corr["best_abs"]:
-        b = corr["best_abs"]
-        print(f"  Best |r|: {b['pearson_r']} at lag {b['lag']} ({b['paired_points']} points)")
-    else:
-        print("  Best |r|: insufficient data")
 
     stability = obs.stability_and_recovery_metrics()
     print("\nStability & Recovery Metrics:")
     for k, v in stability.items():
         print(f"  {k}: {v}")
+
+    health = obs.epistemic_health_index()
+    print("\nEpistemic Health Index:")
+    for section, values in health.items():
+        print(f"  {section}:")
+        if isinstance(values, dict):
+            for k, v in values.items():
+                print(f"    {k}: {v}")
+        else:
+            print(f"    {values}")
 
     print("\nRADO completed (descriptive only).\n")

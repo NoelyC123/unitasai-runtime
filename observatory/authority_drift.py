@@ -8,6 +8,7 @@ Descriptive only.
 from collections import Counter
 from typing import Any
 
+from observatory.epistemic_health import compute_epistemic_health_index
 from observatory.stability_recovery import compute_stability_and_recovery
 from observatory.temporal_correlation import compute_cross_signal_correlation
 from observatory.temporal_windows import TemporalWindowConfig, compute_temporal_windows
@@ -38,7 +39,7 @@ class AuthorityDriftObservatory:
             "total_controller_decisions": total,
             "approved_decisions": len(approved),
             "controller_deference_ratio": (len(approved) / total) if total else None,
-            "note": "Ratios are descriptive only. No normative interpretation is performed.",
+            "note": "Ratios are descriptive only.",
         }
 
     def temporal_authority_drift_windows(
@@ -69,10 +70,6 @@ class AuthorityDriftObservatory:
             max_lag_windows=max_lag_windows,
         )
 
-    # ─────────────────────────────────────────────
-    # Phase 21C — Stability & Recovery Metrics
-    # ─────────────────────────────────────────────
-
     def stability_and_recovery_metrics(
         self,
         *,
@@ -87,4 +84,34 @@ class AuthorityDriftObservatory:
             windows=temporal.get("windows", []),
             episodes=temporal.get("episodes", []),
             drift_threshold=drift_threshold,
+        )
+
+    # ─────────────────────────────────────────────
+    # Phase 22 — Epistemic Health Index
+    # ─────────────────────────────────────────────
+
+    def epistemic_health_index(
+        self,
+        *,
+        window_seconds: int = 300,
+        drift_threshold: float = 0.25,
+        max_lag_windows: int = 3,
+    ) -> dict[str, Any]:
+        temporal = self.temporal_authority_drift_windows(
+            window_seconds=window_seconds,
+            drift_threshold=drift_threshold,
+        )
+        correlation = self.cross_signal_temporal_correlation(
+            window_seconds=window_seconds,
+            drift_threshold=drift_threshold,
+            max_lag_windows=max_lag_windows,
+        )
+        stability = self.stability_and_recovery_metrics(
+            window_seconds=window_seconds,
+            drift_threshold=drift_threshold,
+        )
+        return compute_epistemic_health_index(
+            temporal=temporal,
+            correlation=correlation,
+            stability=stability,
         )
