@@ -1,68 +1,71 @@
 """
-Runtime CLI — Demonstration Harness
-
-NOT Canon.
-Used only to exercise the runtime pipeline safely.
+UnitasAI Runtime Entry Point
 """
 
-from src.model.generator import HypothesisGenerator
-from src.controller.runtime_controller import RuntimeController
 from src.storage.runtime_store import RuntimeStore
+from src.controller.runtime_controller import RuntimeController
 from src.intake.intake_pipeline import run_intake
+from src.intake.generators.simple_generator import SimpleBeliefGenerator
+from src.evaluation.evaluation_engine import run_evaluation
+from observatory.reports.run_rado import run_rado
+
+
+GLOBAL_RUNTIME_STORE = RuntimeStore()
 
 
 def main():
+    controller = RuntimeController(store=GLOBAL_RUNTIME_STORE)
+    generator = SimpleBeliefGenerator()
+
     case_id = "demo-case"
 
-    store = RuntimeStore()
-    controller = RuntimeController()
-    generator = HypothesisGenerator()
-
-    store.create_case(case_id)
-
-    raw_query = input("Enter query:\n> ").strip()
-    if not raw_query:
-        print("No input provided.")
-        return
+    query = input("Enter query:\n> ").strip()
 
     # ─────────────────────────────────────────────
-    # Phase 23 — Intake
+    # Intake
     # ─────────────────────────────────────────────
 
     beliefs = run_intake(
         case_id=case_id,
-        raw_query=raw_query,
+        raw_query=query,
         generator=generator,
         controller=controller,
-        store=store,
+        store=GLOBAL_RUNTIME_STORE,
     )
 
     print("\nCandidate beliefs:")
     for b in beliefs:
-        print("-", b["text"])
+        print(f"- {b['text']}")
 
     # ─────────────────────────────────────────────
-    # Phase 21B — Evaluation
+    # Evaluation
     # ─────────────────────────────────────────────
 
-    evaluations = controller.evaluate_beliefs(
+    evaluations = run_evaluation(
         case_id=case_id,
         beliefs=beliefs,
-        invariants=store.get_invariants(case_id),
+        controller=controller,
+        store=GLOBAL_RUNTIME_STORE,
     )
-
-    for e in evaluations:
-        store.store_evaluation(case_id, e)
 
     print("\nEvaluation results:")
     for e in evaluations:
         print(
-            "- belief_id:", e.belief_id,
-            "| scope:", e.scope,
-            "| admissible:", e.admissible,
-            "| hard violations:", e.hard_violations,
-            "| soft conflicts:", e.soft_conflicts,
+            f"- belief_id: {e['belief_id']} | "
+            f"scope: {e['scope']} | "
+            f"is_admissible: {e['is_admissible']} | "
+            f"hard violations: {e['hard_violations']} | "
+            f"soft conflicts: {e['soft_conflicts']}"
         )
+
+    # ─────────────────────────────────────────────
+    # RADO (post-hoc, read-only)
+    # ─────────────────────────────────────────────
+
+    run_rado(
+        store=GLOBAL_RUNTIME_STORE,
+        case_id=case_id,
+    )
 
 
 if __name__ == "__main__":

@@ -1,47 +1,57 @@
 """
-Runtime Authority Drift Observatory (RADO)
+Authority Drift Observatory
 
-NON-AUTHORITY MODULE
-
-This module performs post-hoc analysis of audit records to describe
-patterns related to evaluation deference and controller behaviour.
-
-It does NOT:
-- Decide
-- Recommend
-- Enforce
-- Warn
-- Block
-- Intervene
-
-All outputs are descriptive only.
+Read-only.
+Descriptive only.
 """
 
-from typing import Iterable, Dict, Any
+from collections import Counter
 
 
 class AuthorityDriftObservatory:
-    """
-    Read-only observatory over audit events.
+    def __init__(self, audit_events):
+        self.events = audit_events
 
-    This class MUST NOT:
-    - Mutate state
-    - Emit audit events
-    - Influence control flow
-    """
+    # ─────────────────────────────────────────────
+    # Audit summary
+    # ─────────────────────────────────────────────
 
-    def __init__(self, audit_events: Iterable[Dict[str, Any]]):
-        # Audit events are assumed to be immutable historical records
-        self._events = list(audit_events)
+    def audit_summary(self):
+        actions = [e["action"] for e in self.events]
+        counts = Counter(actions)
 
-    def snapshot(self) -> Dict[str, Any]:
-        """
-        Returns a raw snapshot summary of available audit data.
-
-        This method intentionally performs no interpretation,
-        scoring, classification, or judgment.
-        """
         return {
-            "total_events": len(self._events),
-            "event_types": sorted({e.get("action", "UNKNOWN") for e in self._events}),
+            "total_events": len(self.events),
+            "actions_breakdown": counts,
+            "evaluation_count": counts.get("EVALUATION", 0),
+            "intake_count": counts.get("INTAKE", 0),
+            "controller_decisions": counts.get("CONTROLLER_DECISION", 0),
+            "first_event": self.events[0]["timestamp"] if self.events else None,
+            "last_event": self.events[-1]["timestamp"] if self.events else None,
+        }
+
+    # ─────────────────────────────────────────────
+    # Authority drift signals
+    # ─────────────────────────────────────────────
+
+    def authority_drift_signals(self):
+        decisions = [
+            e for e in self.events
+            if e["action"] == "CONTROLLER_DECISION"
+        ]
+
+        approved = [
+            e for e in decisions
+            if e["payload"]["decision"] == "approved"
+        ]
+
+        total = len(decisions)
+
+        return {
+            "total_controller_decisions": total,
+            "approved_decisions": len(approved),
+            "controller_deference_ratio":
+                (len(approved) / total) if total else None,
+            "note":
+                "Ratios are descriptive only. No normative interpretation is performed.",
         }

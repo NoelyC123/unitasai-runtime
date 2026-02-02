@@ -9,7 +9,6 @@ No inference.
 import json
 import time
 import hashlib
-from typing import Any, Dict
 
 
 class RuntimeStore:
@@ -17,14 +16,10 @@ class RuntimeStore:
         self._cases = {}
 
     # ─────────────────────────────────────────────
-    # Case management (Phase 1–3 compatible)
+    # Case management
     # ─────────────────────────────────────────────
 
     def create_case(self, case_id: str):
-        """
-        Canon-compatible alias.
-        Explicit case creation.
-        """
         self.ensure_case(case_id)
 
     def ensure_case(self, case_id: str):
@@ -40,7 +35,7 @@ class RuntimeStore:
     # Belief storage
     # ─────────────────────────────────────────────
 
-    def store_belief(self, case_id: str, belief: Dict[str, Any]):
+    def store_belief(self, case_id: str, belief: dict):
         self.ensure_case(case_id)
         self._cases[case_id]["beliefs"].append(belief)
 
@@ -61,39 +56,39 @@ class RuntimeStore:
         return list(self._cases[case_id]["invariants"])
 
     # ─────────────────────────────────────────────
-    # Evaluations (Phase 21B)
+    # Evaluations (Phase 21B++)
     # ─────────────────────────────────────────────
 
-    def store_evaluation(self, case_id: str, evaluation: Any):
+    def store_evaluation(self, case_id: str, evaluation: dict):
         """
         Append-only evaluation artifact.
 
-        Accepts either:
-        - dict (preferred, canonical)
-        - object with __dict__ (legacy-compatible)
-
-        Stores dict representation only.
+        Audit payload is semantically explicit.
+        No inference.
+        No renaming by observers.
         """
         self.ensure_case(case_id)
+        self._cases[case_id]["evaluations"].append(evaluation)
 
-        if isinstance(evaluation, dict):
-            payload = evaluation
-        else:
-            payload = dict(evaluation.__dict__)
-
-        self._cases[case_id]["evaluations"].append(payload)
+        audit_payload = {
+            "belief_id": evaluation["belief_id"],
+            "scope": evaluation["scope"],
+            "is_admissible": evaluation["is_admissible"],
+            "hard_violations": list(evaluation["hard_violations"]),
+            "soft_conflicts": list(evaluation["soft_conflicts"]),
+        }
 
         self.log(
-            case_id,
+            case_id=case_id,
             action="EVALUATION",
-            payload=payload,
+            payload=audit_payload,
         )
 
     # ─────────────────────────────────────────────
     # Audit log (append-only)
     # ─────────────────────────────────────────────
 
-    def log(self, case_id: str, action: str, payload: Dict[str, Any]):
+    def log(self, case_id: str, action: str, payload: dict):
         self.ensure_case(case_id)
 
         entry = {
@@ -116,18 +111,7 @@ class RuntimeStore:
     # ─────────────────────────────────────────────
 
     def list_audit_events(self, case_id: str):
-        """
-        Read-only access to audit events.
-
-        This method:
-        - Returns existing audit records only
-        - Performs no mutation
-        - Emits no audit events
-        - Does not influence controller behaviour
-        - Exists solely for post-hoc observatory analysis
-        """
         case = self._cases.get(case_id)
         if not case:
             return []
-
-        return list(case.get("audit", []))
+        return list(case["audit"])
