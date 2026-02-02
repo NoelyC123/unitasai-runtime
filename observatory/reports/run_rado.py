@@ -42,7 +42,6 @@ def run_rado(*, store, case_id: str) -> None:
     )
 
     corr = obs.cross_signal_temporal_correlation()
-
     print("\nCross-Signal Temporal Correlation:")
     print(f"  Zero-lag r: {corr['zero_lag']['pearson_r']}")
     if corr["best_abs"]:
@@ -50,5 +49,10 @@ def run_rado(*, store, case_id: str) -> None:
         print(f"  Best |r|: {b['pearson_r']} at lag {b['lag']} ({b['paired_points']} points)")
     else:
         print("  Best |r|: insufficient data")
+
+    stability = obs.stability_and_recovery_metrics()
+    print("\nStability & Recovery Metrics:")
+    for k, v in stability.items():
+        print(f"  {k}: {v}")
 
     print("\nRADO completed (descriptive only).\n")

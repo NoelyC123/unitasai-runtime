@@ -8,6 +8,7 @@ Descriptive only.
 from collections import Counter
 from typing import Any
 
+from observatory.stability_recovery import compute_stability_and_recovery
 from observatory.temporal_correlation import compute_cross_signal_correlation
 from observatory.temporal_windows import TemporalWindowConfig, compute_temporal_windows
 
@@ -19,7 +20,6 @@ class AuthorityDriftObservatory:
     def audit_summary(self):
         actions = [e["action"] for e in self.events]
         counts = Counter(actions)
-
         return {
             "total_events": len(self.events),
             "actions_breakdown": counts,
@@ -34,7 +34,6 @@ class AuthorityDriftObservatory:
         decisions = [e for e in self.events if e["action"] == "CONTROLLER_DECISION"]
         approved = [e for e in decisions if e["payload"]["decision"] == "approved"]
         total = len(decisions)
-
         return {
             "total_controller_decisions": total,
             "approved_decisions": len(approved),
@@ -68,4 +67,24 @@ class AuthorityDriftObservatory:
         return compute_cross_signal_correlation(
             windows=temporal.get("windows", []),
             max_lag_windows=max_lag_windows,
+        )
+
+    # ─────────────────────────────────────────────
+    # Phase 21C — Stability & Recovery Metrics
+    # ─────────────────────────────────────────────
+
+    def stability_and_recovery_metrics(
+        self,
+        *,
+        window_seconds: int = 300,
+        drift_threshold: float = 0.25,
+    ) -> dict[str, Any]:
+        temporal = self.temporal_authority_drift_windows(
+            window_seconds=window_seconds,
+            drift_threshold=drift_threshold,
+        )
+        return compute_stability_and_recovery(
+            windows=temporal.get("windows", []),
+            episodes=temporal.get("episodes", []),
+            drift_threshold=drift_threshold,
         )
