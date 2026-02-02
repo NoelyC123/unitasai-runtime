@@ -8,6 +8,7 @@ Descriptive only.
 from collections import Counter
 from typing import Any
 
+from observatory.audit_export import build_audit_export_bundle
 from observatory.epistemic_health import compute_epistemic_health_index
 from observatory.stability_recovery import compute_stability_and_recovery
 from observatory.temporal_correlation import compute_cross_signal_correlation
@@ -86,10 +87,6 @@ class AuthorityDriftObservatory:
             drift_threshold=drift_threshold,
         )
 
-    # ─────────────────────────────────────────────
-    # Phase 22 — Epistemic Health Index
-    # ─────────────────────────────────────────────
-
     def epistemic_health_index(
         self,
         *,
@@ -114,4 +111,36 @@ class AuthorityDriftObservatory:
             temporal=temporal,
             correlation=correlation,
             stability=stability,
+        )
+
+    # ─────────────────────────────────────────────
+    # Phase 23 — Governance & Audit Export
+    # ─────────────────────────────────────────────
+
+    def governance_audit_export(
+        self,
+        *,
+        case_id: str,
+        window_seconds: int = 300,
+        drift_threshold: float = 0.25,
+        max_lag_windows: int = 3,
+    ) -> dict[str, Any]:
+        temporal = self.temporal_authority_drift_windows(
+            window_seconds=window_seconds,
+            drift_threshold=drift_threshold,
+        )
+        stability = self.stability_and_recovery_metrics(
+            window_seconds=window_seconds,
+            drift_threshold=drift_threshold,
+        )
+        health = self.epistemic_health_index(
+            window_seconds=window_seconds,
+            drift_threshold=drift_threshold,
+            max_lag_windows=max_lag_windows,
+        )
+        return build_audit_export_bundle(
+            case_id=case_id,
+            temporal=temporal,
+            stability=stability,
+            health=health,
         )

@@ -50,14 +50,9 @@ def run_rado(*, store, case_id: str) -> None:
     for k, v in stability.items():
         print(f"  {k}: {v}")
 
-    health = obs.epistemic_health_index()
-    print("\nEpistemic Health Index:")
-    for section, values in health.items():
-        print(f"  {section}:")
-        if isinstance(values, dict):
-            for k, v in values.items():
-                print(f"    {k}: {v}")
-        else:
-            print(f"    {values}")
+    export = obs.governance_audit_export(case_id=case_id)
+    print("\nGovernance Audit Export (JSON-ready):")
+    for k, v in export.items():
+        print(f"  {k}: {type(v).__name__}")
 
     print("\nRADO completed (descriptive only).\n")
