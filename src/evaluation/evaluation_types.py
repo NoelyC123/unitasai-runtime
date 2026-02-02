@@ -12,10 +12,9 @@ They DO NOT decide outcomes.
 They DO NOT recommend action.
 """
 
-from dataclasses import dataclass
-from typing import List
 import time
 import uuid
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -40,8 +39,8 @@ class EvaluationResult:
     scope: str  # assertive | counterfactual | meta
 
     admissible: bool
-    hard_violations: List[str]
-    soft_conflicts: List[str]
+    hard_violations: list[str]
+    soft_conflicts: list[str]
 
     timestamp: float
 
@@ -50,8 +49,8 @@ class EvaluationResult:
         belief_id: str,
         case_id: str,
         scope: str,
-        hard_violations: List[str],
-        soft_conflicts: List[str],
+        hard_violations: list[str],
+        soft_conflicts: list[str],
     ) -> "EvaluationResult":
         """
         Deterministic factory.

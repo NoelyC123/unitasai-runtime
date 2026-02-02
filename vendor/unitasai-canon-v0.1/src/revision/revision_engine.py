@@ -1,12 +1,11 @@
-from typing import List
 from uuid import UUID
 
+from src.controller.controller_context import ControllerContext
 from src.revision.revision_types import (
+    BeliefStateChange,
     RevisionCandidate,
     RevisionType,
-    BeliefStateChange,
 )
-from src.controller.controller_context import ControllerContext
 
 
 class RevisionEngine:
@@ -24,11 +23,10 @@ class RevisionEngine:
         self,
         belief_id: UUID,
         context: ControllerContext,
-    ) -> List[RevisionCandidate]:
-
+    ) -> list[RevisionCandidate]:
         belief = context.belief_store.get(belief_id)
 
-        candidates: List[RevisionCandidate] = []
+        candidates: list[RevisionCandidate] = []
 
         # Candidate 1: Invalidate belief
         candidates.append(

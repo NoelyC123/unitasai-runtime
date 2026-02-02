@@ -1,8 +1,4 @@
 from uuid import UUID
-from datetime import datetime
-from typing import Optional, Dict
-
-from src.models.audit_event import AuditEvent
 
 
 class AuditStore:
@@ -15,9 +11,9 @@ class AuditStore:
         self,
         *,
         event_type: str,
-        case_id: Optional[UUID],
-        artifact_id: Optional[UUID],
-        metadata: Dict[str, str],
+        case_id: UUID | None,
+        artifact_id: UUID | None,
+        metadata: dict[str, str],
     ) -> None:
         raise NotImplementedError
 

@@ -1,11 +1,12 @@
 from dataclasses import dataclass
-from src.storage.belief_store import BeliefStore
-from src.storage.justification_store import JustificationStore
-from src.storage.evaluation_store import EvaluationStore
-from src.storage.tension_store import TensionStore
-from src.storage.revision_store import RevisionStore
-from src.storage.invariant_store import InvariantStore
+
 from src.storage.audit_store import AuditStore
+from src.storage.belief_store import BeliefStore
+from src.storage.evaluation_store import EvaluationStore
+from src.storage.invariant_store import InvariantStore
+from src.storage.justification_store import JustificationStore
+from src.storage.revision_store import RevisionStore
+from src.storage.tension_store import TensionStore
 
 
 @dataclass(frozen=True)

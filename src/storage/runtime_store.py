@@ -6,9 +6,9 @@ No mutation.
 No inference.
 """
 
+import hashlib
 import json
 import time
-import hashlib
 
 
 class RuntimeStore:
@@ -95,9 +95,7 @@ class RuntimeStore:
             "timestamp": time.time(),
             "action": action,
             "payload": payload,
-            "hash": hashlib.sha256(
-                json.dumps(payload, sort_keys=True).encode()
-            ).hexdigest(),
+            "hash": hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest(),
         }
 
         audit = self._cases[case_id]["audit"]

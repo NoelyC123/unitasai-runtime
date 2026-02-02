@@ -1,13 +1,12 @@
-from uuid import uuid4, UUID
 from datetime import datetime
-from typing import List
+from uuid import UUID, uuid4
 
+from src.controller.controller_context import ControllerContext
 from src.tensions.tension_types import (
     Tension,
-    TensionType,
     TensionStatus,
+    TensionType,
 )
-from src.controller.controller_context import ControllerContext
 
 
 class TensionEngine:
@@ -24,12 +23,11 @@ class TensionEngine:
         self,
         belief_id: UUID,
         context: ControllerContext,
-    ) -> List[Tension]:
-
+    ) -> list[Tension]:
         belief = context.belief_store.get(belief_id)
         existing_beliefs = context.belief_store.list_for_case(belief.case_id)
 
-        detected: List[Tension] = []
+        detected: list[Tension] = []
 
         for other in existing_beliefs:
             if other.belief_id == belief.belief_id:

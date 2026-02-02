@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
 
 
 @dataclass(frozen=True)
@@ -15,11 +14,11 @@ class Belief:
     case_id: UUID
 
     text: str
-    scope: str              # Canon enum; values not resolved here
-    status: str             # active | revised | invalidated
-    confidence: float       # semantics deferred (Canon v0.1)
+    scope: str  # Canon enum; values not resolved here
+    status: str  # active | revised | invalidated
+    confidence: float  # semantics deferred (Canon v0.1)
 
     created_at: datetime
     created_by: str
 
-    superseded_by: Optional[UUID] = None
+    superseded_by: UUID | None = None

@@ -1,11 +1,9 @@
-from typing import List
-
 from src.controller.controller_context import ControllerContext
+from src.intake.intake_engine import IntakeEngine
+from src.intake.intake_errors import IntakeFailureReason
+from src.intake.intake_types import BeliefIntakeRequest, IntakeOutcome
 from src.invariants.invariant_controller import InvariantController
 from src.invariants.invariant_types import InvariantDefinition
-from src.intake.intake_engine import IntakeEngine
-from src.intake.intake_types import BeliefIntakeRequest, IntakeOutcome
-from src.intake.intake_errors import IntakeFailureReason
 
 
 class IntakeController:
@@ -23,10 +21,9 @@ class IntakeController:
     def submit_belief(
         self,
         request: BeliefIntakeRequest,
-        invariants: List[InvariantDefinition],
+        invariants: list[InvariantDefinition],
         context: ControllerContext,
     ) -> IntakeOutcome:
-
         violations = self._invariants.evaluate_case_invariants(
             case_id=request.case_id,
             invariants=invariants,

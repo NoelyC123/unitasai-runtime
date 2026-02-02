@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from uuid import UUID
-from typing import Optional, List
+
 from src.intake.intake_errors import IntakeFailureReason
 
 
@@ -10,7 +10,7 @@ class BeliefIntakeRequest:
     case_id: UUID
     text: str
     scope: str
-    confidence: Optional[float]
+    confidence: float | None
 
 
 @dataclass(frozen=True)
@@ -25,6 +25,6 @@ class JustificationIntakeRequest:
 class IntakeOutcome:
     request_id: UUID
     admitted: bool
-    artifact_id: Optional[UUID]
-    failure_reason: Optional[IntakeFailureReason]
-    warnings: List[str]
+    artifact_id: UUID | None
+    failure_reason: IntakeFailureReason | None
+    warnings: list[str]

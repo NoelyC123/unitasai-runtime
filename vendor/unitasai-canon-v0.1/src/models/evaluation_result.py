@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
 
 
 @dataclass(frozen=True)
@@ -14,7 +14,7 @@ class EvaluationResult:
     belief_id: UUID
     case_id: UUID
 
-    evaluation_status: str     # supported | unsupported | indeterminate
-    evaluation_basis: str      # structured descriptor (no narrative)
+    evaluation_status: str  # supported | unsupported | indeterminate
+    evaluation_basis: str  # structured descriptor (no narrative)
 
     created_at: datetime

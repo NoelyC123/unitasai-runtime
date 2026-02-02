@@ -9,7 +9,6 @@ This pipeline:
 - performs NO mutation outside storage
 """
 
-from typing import List, Dict
 import time
 
 
@@ -20,7 +19,7 @@ def run_intake(
     generator,
     controller,
     store,
-) -> List[Dict]:
+) -> list[dict]:
     """
     Execute intake for a single query.
 
@@ -40,7 +39,7 @@ def run_intake(
 
     texts = generator.generate(raw_query)
 
-    beliefs: List[Dict] = []
+    beliefs: list[dict] = []
 
     for text in texts:
         belief = {

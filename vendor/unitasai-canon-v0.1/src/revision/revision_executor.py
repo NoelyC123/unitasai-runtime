@@ -1,8 +1,7 @@
 from uuid import UUID
-from typing import List
 
-from src.revision.revision_types import RevisionCandidate, BeliefStateChange
 from src.controller.controller_context import ControllerContext
+from src.revision.revision_types import BeliefStateChange, RevisionCandidate
 
 
 class RevisionExecutor:
@@ -20,7 +19,6 @@ class RevisionExecutor:
         candidate: RevisionCandidate,
         context: ControllerContext,
     ) -> None:
-
         for change in candidate.affected_beliefs:
             self._apply_belief_change(change, context)
 
@@ -36,7 +34,6 @@ class RevisionExecutor:
         change: BeliefStateChange,
         context: ControllerContext,
     ) -> None:
-
         if change.field_changed == "status":
             context.belief_store.update_status(
                 belief_id=change.belief_id,

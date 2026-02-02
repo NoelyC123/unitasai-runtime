@@ -7,11 +7,12 @@ IMPORTANT:
 - Metrics do NOT classify or evaluate safety
 """
 
-from typing import Iterable, Dict, Any
+from collections.abc import Iterable
+from typing import Any
 
 
-def count_actions(events: Iterable[Dict[str, Any]]) -> Dict[str, int]:
-    counts: Dict[str, int] = {}
+def count_actions(events: Iterable[dict[str, Any]]) -> dict[str, int]:
+    counts: dict[str, int] = {}
     for e in events:
         action = e.get("action", "UNKNOWN")
         counts[action] = counts.get(action, 0) + 1

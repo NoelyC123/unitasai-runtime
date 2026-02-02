@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from src.evaluation.evaluation_engine import EvaluationEngine
 from src.controller.controller_context import ControllerContext
+from src.evaluation.evaluation_engine import EvaluationEngine
 
 
 class EvaluationController:
@@ -18,7 +18,6 @@ class EvaluationController:
         belief_id: UUID,
         context: ControllerContext,
     ) -> None:
-
         context.audit_store.emit_evaluation_invoked(
             belief_id=belief_id,
         )

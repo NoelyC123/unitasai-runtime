@@ -1,5 +1,6 @@
-from typing import Protocol, List
+from typing import Protocol
 from uuid import UUID
+
 from src.models.justification import Justification
 
 
@@ -9,8 +10,6 @@ class JustificationStore(Protocol):
     Phase: 23
     """
 
-    def list_for_belief(self, belief_id: UUID) -> List[Justification]:
-        ...
+    def list_for_belief(self, belief_id: UUID) -> list[Justification]: ...
 
-    def insert(self, justification: Justification) -> None:
-        ...
+    def insert(self, justification: Justification) -> None: ...

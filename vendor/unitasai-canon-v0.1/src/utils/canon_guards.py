@@ -7,8 +7,10 @@ These guards prevent:
 - Controller bypassing
 """
 
+
 class CanonViolation(RuntimeError):
     """Raised when Canon v0.1 is violated."""
+
     pass
 
 
@@ -31,6 +33,4 @@ def forbid_underspecified(area_id: str) -> None:
     """
     Guard against accidental resolution of underspecified Canon areas.
     """
-    raise CanonViolation(
-        f"Underspecified Canon area accessed without version bump: {area_id}"
-    )
+    raise CanonViolation(f"Underspecified Canon area accessed without version bump: {area_id}")

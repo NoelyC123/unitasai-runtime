@@ -1,4 +1,3 @@
-from typing import Dict, Optional
 from uuid import UUID
 
 from src.controller.controller_context import ControllerContext
@@ -14,9 +13,9 @@ class AuditController:
         self,
         *,
         event_type: str,
-        case_id: Optional[UUID],
-        artifact_id: Optional[UUID],
-        metadata: Dict[str, str],
+        case_id: UUID | None,
+        artifact_id: UUID | None,
+        metadata: dict[str, str],
         context: ControllerContext,
     ) -> None:
         context.audit_store.emit(
@@ -25,4 +24,3 @@ class AuditController:
             artifact_id=artifact_id,
             metadata=metadata,
         )
-

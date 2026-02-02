@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from src.tensions.tension_engine import TensionEngine
 from src.controller.controller_context import ControllerContext
+from src.tensions.tension_engine import TensionEngine
 
 
 class TensionController:
@@ -18,7 +18,6 @@ class TensionController:
         belief_id: UUID,
         context: ControllerContext,
     ) -> None:
-
         tensions = self.engine.detect_for_belief(
             belief_id=belief_id,
             context=context,

@@ -1,5 +1,3 @@
-from typing import List
-
 from src.controller.controller_context import ControllerContext
 from src.invariants.invariant_controller import InvariantController
 from src.invariants.invariant_types import InvariantDefinition
@@ -22,10 +20,9 @@ class RevisionController:
     def execute_revision(
         self,
         plan: RevisionPlan,
-        invariants: List[InvariantDefinition],
+        invariants: list[InvariantDefinition],
         context: ControllerContext,
     ) -> None:
-
         violations = self._invariants.evaluate_case_invariants(
             case_id=plan.case_id,
             invariants=invariants,

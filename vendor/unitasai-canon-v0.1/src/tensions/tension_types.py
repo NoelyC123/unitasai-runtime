@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from enum import Enum
-from typing import List, Optional
-from uuid import UUID
 from datetime import datetime
+from enum import Enum
+from uuid import UUID
 
 
 class TensionType(Enum):
@@ -24,12 +23,13 @@ class Tension:
     Canon v0.1 — Tension Artifact
     Phase 21C
     """
+
     tension_id: UUID
     case_id: UUID
     tension_type: TensionType
-    participants: List[UUID]
+    participants: list[UUID]
     status: TensionStatus
     description: str
     created_at: datetime
-    resolved_at: Optional[datetime]
-    superseded_by: Optional[UUID]
+    resolved_at: datetime | None
+    superseded_by: UUID | None

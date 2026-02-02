@@ -17,22 +17,19 @@ NO LLM.
 from uuid import uuid4
 
 from src.controller.controller_context import ControllerContext
-from src.controller.intake_controller import IntakeController
 from src.controller.evaluation_controller import EvaluationController
-from src.controller.tension_controller import TensionController
+from src.controller.intake_controller import IntakeController
 from src.controller.invariant_controller import InvariantController
 from src.controller.revision_controller import RevisionController
-
-from src.storage.belief_store import BeliefStore
-from src.storage.justification_store import JustificationStore
-from src.storage.evaluation_store import EvaluationStore
-from src.storage.tension_store import TensionStore
-from src.storage.revision_store import RevisionStore
-from src.storage.invariant_store import InvariantStore
-from src.storage.audit_store import AuditStore
-
+from src.controller.tension_controller import TensionController
 from src.intake.intake_types import BeliefIntakeRequest
-from src.intake.intake_engine import IntakeEngine
+from src.storage.audit_store import AuditStore
+from src.storage.belief_store import BeliefStore
+from src.storage.evaluation_store import EvaluationStore
+from src.storage.invariant_store import InvariantStore
+from src.storage.justification_store import JustificationStore
+from src.storage.revision_store import RevisionStore
+from src.storage.tension_store import TensionStore
 
 
 def run_canon_dry_run() -> None:

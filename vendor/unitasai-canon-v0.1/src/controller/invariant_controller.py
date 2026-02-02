@@ -1,11 +1,9 @@
-from typing import List
-
 from src.controller.controller_context import ControllerContext
 from src.invariants.invariant_engine import InvariantEngine
 from src.invariants.invariant_types import (
     InvariantDefinition,
-    InvariantViolation,
     InvariantSeverity,
+    InvariantViolation,
 )
 
 
@@ -24,10 +22,9 @@ class InvariantController:
     def evaluate_case_invariants(
         self,
         case_id,
-        invariants: List[InvariantDefinition],
+        invariants: list[InvariantDefinition],
         context: ControllerContext,
-    ) -> List[InvariantViolation]:
-
+    ) -> list[InvariantViolation]:
         violations = self._engine.evaluate_case(
             case_id=case_id,
             invariants=invariants,
@@ -45,10 +42,6 @@ class InvariantController:
 
     def has_hard_violation(
         self,
-        violations: List[InvariantViolation],
+        violations: list[InvariantViolation],
     ) -> bool:
-
-        return any(
-            v.severity == InvariantSeverity.HARD
-            for v in violations
-        )
+        return any(v.severity == InvariantSeverity.HARD for v in violations)

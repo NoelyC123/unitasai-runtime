@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 from uuid import UUID
-from typing import Any, Dict, List
 
 
 class InvariantSeverity(str, Enum):
@@ -31,4 +31,4 @@ class InvariantViolation:
     invariant_id: UUID
     severity: InvariantSeverity
     violated_by: UUID  # belief_id or case_id
-    context: Dict[str, Any]
+    context: dict[str, Any]

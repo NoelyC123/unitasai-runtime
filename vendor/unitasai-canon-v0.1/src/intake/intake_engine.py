@@ -1,14 +1,13 @@
 from uuid import UUID
-from typing import List
 
+from src.controller.controller_context import ControllerContext
+from src.intake.intake_errors import IntakeFailureReason
 from src.intake.intake_types import (
     BeliefIntakeRequest,
-    JustificationIntakeRequest,
     IntakeOutcome,
     IntakeOutcomeType,
+    JustificationIntakeRequest,
 )
-from src.intake.intake_errors import IntakeFailureReason
-from src.controller.controller_context import ControllerContext
 
 
 class IntakeEngine:

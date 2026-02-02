@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, Dict
 from uuid import UUID
 
 
@@ -13,7 +12,7 @@ class AuditEvent:
 
     event_id: UUID
     event_type: str
-    case_id: Optional[UUID]
-    artifact_id: Optional[UUID]
+    case_id: UUID | None
+    artifact_id: UUID | None
     timestamp: datetime
-    metadata: Dict[str, str]
+    metadata: dict[str, str]

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
 from uuid import UUID
 
 
@@ -26,6 +25,7 @@ class RevisionCandidate:
     Canon v0.1 — Revision Candidate (non-executed)
     Phase 21D
     """
+
     revision_type: RevisionType
-    affected_beliefs: List[BeliefStateChange]
+    affected_beliefs: list[BeliefStateChange]
     minimal_change_score: int

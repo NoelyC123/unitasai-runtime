@@ -12,8 +12,6 @@ This generator:
 - Exists solely to externalise candidate text generation
 """
 
-from typing import List
-
 
 class SimpleBeliefGenerator:
     """
@@ -25,10 +23,8 @@ class SimpleBeliefGenerator:
     - Deterministic given identical input
     """
 
-    def generate(self, raw_query: str) -> List[str]:
+    def generate(self, raw_query: str) -> list[str]:
         """
         Return raw hypothesis strings only.
         """
-        return [
-            raw_query
-        ]
+        return [raw_query]

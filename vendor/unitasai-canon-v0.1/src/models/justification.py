@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
 
 
 @dataclass(frozen=True)
@@ -16,10 +15,10 @@ class Justification:
     case_id: UUID
 
     content: str
-    source_type: str        # Canon enum; deferred
+    source_type: str  # Canon enum; deferred
     scope: str
 
     created_at: datetime
     created_by: str
 
-    withdrawn_at: Optional[datetime] = None
+    withdrawn_at: datetime | None = None

@@ -1,5 +1,6 @@
-from typing import Protocol, List
+from typing import Protocol
 from uuid import UUID
+
 from src.models.revision_event import RevisionEvent
 
 
@@ -9,8 +10,6 @@ class RevisionStore(Protocol):
     Phase: 21D
     """
 
-    def list_by_case(self, case_id: UUID) -> List[RevisionEvent]:
-        ...
+    def list_by_case(self, case_id: UUID) -> list[RevisionEvent]: ...
 
-    def insert(self, revision: RevisionEvent) -> None:
-        ...
+    def insert(self, revision: RevisionEvent) -> None: ...

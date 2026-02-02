@@ -1,11 +1,8 @@
-from typing import List
-
+from src.controller.controller_context import ControllerContext
 from src.invariants.invariant_types import (
     InvariantDefinition,
     InvariantViolation,
-    InvariantSeverity,
 )
-from src.controller.controller_context import ControllerContext
 
 
 class InvariantEngine:
@@ -21,11 +18,10 @@ class InvariantEngine:
     def evaluate_case(
         self,
         case_id,
-        invariants: List[InvariantDefinition],
+        invariants: list[InvariantDefinition],
         context: ControllerContext,
-    ) -> List[InvariantViolation]:
-
-        violations: List[InvariantViolation] = []
+    ) -> list[InvariantViolation]:
+        violations: list[InvariantViolation] = []
 
         for invariant in invariants:
             violated = self._check_invariant(invariant, case_id, context)

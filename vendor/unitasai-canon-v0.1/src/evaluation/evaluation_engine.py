@@ -1,13 +1,12 @@
-from uuid import uuid4, UUID
 from datetime import datetime
-from typing import List
+from uuid import UUID, uuid4
 
+from src.controller.controller_context import ControllerContext
 from src.evaluation.evaluation_types import (
     EvaluationResult,
     EvaluationStatus,
     StructuredReasoning,
 )
-from src.controller.controller_context import ControllerContext
 
 
 class EvaluationEngine:
@@ -23,7 +22,6 @@ class EvaluationEngine:
         belief_id: UUID,
         context: ControllerContext,
     ) -> EvaluationResult:
-
         belief = context.belief_store.get(belief_id)
         justifications = context.justification_store.list_for_belief(belief_id)
         tensions = context.tension_store.list_for_belief(belief_id)

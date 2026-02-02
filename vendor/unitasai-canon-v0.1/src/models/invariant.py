@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
 
 
 @dataclass(frozen=True)
@@ -13,8 +13,8 @@ class Invariant:
     invariant_id: UUID
     case_id: UUID
 
-    invariant_type: str        # hard | soft
-    predicate: str             # predicate language deferred
+    invariant_type: str  # hard | soft
+    predicate: str  # predicate language deferred
 
     active: bool
 

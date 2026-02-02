@@ -5,6 +5,7 @@ Deterministic.
 Non-authoritative.
 """
 
+
 def run_evaluation(*, case_id, beliefs, controller, store):
     evaluations = []
 
