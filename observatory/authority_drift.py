@@ -6,6 +6,9 @@ Descriptive only.
 """
 
 from collections import Counter
+from typing import Any
+
+from observatory.temporal_windows import TemporalWindowConfig, compute_temporal_windows
 
 
 class AuthorityDriftObservatory:
@@ -47,3 +50,44 @@ class AuthorityDriftObservatory:
             "controller_deference_ratio": (len(approved) / total) if total else None,
             "note": "Ratios are descriptive only. No normative interpretation is performed.",
         }
+
+    # ─────────────────────────────────────────────
+    # Phase 21B++c — Temporal Authority Drift Windows
+    # ─────────────────────────────────────────────
+
+    def temporal_authority_drift_windows(
+        self,
+        *,
+        window_seconds: int = 300,
+        drift_threshold: float = 0.25,
+    ) -> dict[str, Any]:
+        """
+        Compute temporal authority drift windows over existing audit-derived ratios.
+
+        Inputs:
+          - Uses self.events (already case-scoped audit events)
+          - window_seconds: fixed window size in seconds
+          - drift_threshold: absolute L1 delta threshold for episode detection
+
+        Output (descriptive only):
+          {
+            "config": {...},
+            "windows": [...],
+            "episodes": [...],
+            "metrics": {...}
+          }
+
+        Notes:
+        - No mutation
+        - No authority creation
+        - No control or policy inference
+        """
+        config = TemporalWindowConfig(
+            window_seconds=window_seconds,
+            drift_threshold=drift_threshold,
+        )
+
+        return compute_temporal_windows(
+            self.events,
+            config=config,
+        )

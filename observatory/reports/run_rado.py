@@ -44,6 +44,42 @@ def run_rado(*, store, case_id: str) -> None:
     for k, v in drift.items():
         print(f"  {k}: {v}")
 
+    # ─────────────────────────────────────────────
+    # Phase 21B++c — Temporal Authority Drift Windows
+    # ─────────────────────────────────────────────
+
+    print("\nTemporal Authority Drift Windows:")
+    temporal = obs.temporal_authority_drift_windows()
+
+    print("  Config:")
+    for k, v in temporal.get("config", {}).items():
+        print(f"    {k}: {v}")
+
+    print("\n  Window Metrics:")
+    metrics = temporal.get("metrics", {})
+    for k, v in metrics.items():
+        print(f"    {k}: {v}")
+
+    print("\n  Windows:")
+    windows = temporal.get("windows", [])
+    if not windows:
+        print("    (no windows)")
+    else:
+        for i, w in enumerate(windows):
+            print(f"    Window {i}:")
+            for k, v in w.items():
+                print(f"      {k}: {v}")
+
+    episodes = temporal.get("episodes", [])
+    print("\n  Drift Episodes:")
+    if not episodes:
+        print("    (no episodes)")
+    else:
+        for i, ep in enumerate(episodes):
+            print(f"    Episode {i}:")
+            for k, v in ep.items():
+                print(f"      {k}: {v}")
+
     print("\nRADO completed (descriptive only).\n")
 
 
